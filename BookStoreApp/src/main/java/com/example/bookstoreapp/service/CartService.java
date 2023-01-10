@@ -10,11 +10,13 @@ import com.example.bookstoreapp.repository.CartRepository;
 import com.example.bookstoreapp.repository.UserDataRepository;
 import com.example.bookstoreapp.utility.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.logging.logback.ColorConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService implements CartServiceImp{
@@ -25,35 +27,44 @@ public class CartService implements CartServiceImp{
     @Autowired
     BookDataRepository bookDataRepository;
     @Autowired
+    BookService bookService;
+    @Autowired
     TokenGenerator tokenGenerator;
+    @Autowired
+    UserDataService userDataService;
     //saving a specific record by using the method save() of jpaRepository
     @Override
     public Cart addInCart(CartDTO cartDTO,String token) {
-        int userId=tokenGenerator.decodeToken(token);
-        Optional<UserData> userData = userDataRepository.findById(userId);
-        Optional<BookData> bookData =bookDataRepository.findById(cartDTO.getBookId());
-        if (bookData.isPresent() && userData.isPresent() && bookData.get().getQuantity() >= cartDTO.getQuantity()) {
-            List<Cart> cartDataList = cartRepository.findAll();
-            for (Cart data : cartDataList) {
-                if (data.getCartId()==(cartDTO.getBookId())) {
-                    throw (new CustomException("Cart is already existing"));
-                }
-            }
-            double bookPrice = bookData.get().getPrice() * cartDTO.getQuantity();
-            Cart cart = new Cart(userData.get(), bookData.get(), cartDTO.getQuantity(),bookPrice);
-            return cartRepository.save(cart);
-        } else {
-            throw new CustomException("Book or user data is not available to add in cart");
-        }
+       UserData userData= userDataService.getUserDataById(token);
+        ArrayList<BookData> bookList = new ArrayList<>();
+        int userID = userData.getUserID();
+        int cartId= 0;
+        if (cartRepository.findCartByUserId(userID)==null) {
+            List<Integer> bookIdList =cartDTO.bookId;
+            List<Integer> quantities =cartDTO.quantity;
+            float totalPrice = 0;
+           for (int i = 0; i < bookIdList.size(); i++) {
 
+                if (quantities.get(i) <= bookService.getById(bookIdList.get(i)).getQuantity()) {
+                    bookList.add(bookService.getById(bookIdList.get(i)));
+                    totalPrice += bookService.getById(bookIdList.get(i)).getPrice() * (quantities.get(i));
+
+                }  else
+                    throw new CustomException("Please select a small quantity to order as stocks are limited: Current stock for book id: " + bookIdList.get(i) + " is " + bookService.getById(bookIdList.get(i)).getQuantity() + ".");
+            }}
+         Cart cart = new Cart(userData, cartDTO.getBookId(), cartDTO.getQuantity());
+
+
+        return cartRepository.save(cart);
     }
+
+
     //getting all cards record by using the method findaAll() of JpaRepository
     @Override
-    public Optional<Cart> getCartData(String token) {
+    public List<Cart> getCartData(String token) {
         int userId = tokenGenerator.decodeToken(token);
        if(userDataRepository.findById(userId).isPresent()){
-       return cartRepository.findById(userId);
-
+           return cartRepository.findAll();
        }else{
            throw new CustomException("This user id is not present");
        }
@@ -75,23 +86,9 @@ public class CartService implements CartServiceImp{
         } else {
             throw new CustomException(" Did not get any cart for specific cart id ");
         }    }
-    //updating a record
-    @Override
-    public Cart updateCartByToken(CartDTO cartDTO, String token, int cartId) {
-        int userId = tokenGenerator.decodeToken(token);
-        Optional<Cart> cart = cartRepository.findById(cartId);
-        Optional<BookData> bookData = bookDataRepository.findById(cartDTO.getBookId());
-        Optional<UserData> userData = userDataRepository.findById(userId);
-        if (cart.isEmpty()) {
-            throw new CustomException("Cart does not exist");
-        } else {
-            if (bookData.isPresent() && userData.isPresent()) {
-                double bookPrice = bookData.get().getPrice() * cartDTO.getQuantity();
-                Cart cartData1 = new Cart(userData.get(), bookData.get(), cartDTO.getQuantity(), bookPrice);
-                return cartRepository.save(cartData1);
-            } else {
-                throw new CustomException("Book data or user token is not available in database");
-            }
-        }
-    }
+
+
+
+
+
 }

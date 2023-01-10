@@ -40,11 +40,6 @@ public class CartController {
 
 
 
-    @PutMapping("/updateCart/{token}/{cartId}")
-    public ResponseEntity<ResponseDTO> updateCartByToken(@RequestBody CartDTO cartDto, @PathVariable String token, @PathVariable int cartId) {
-        ResponseDTO responseDto = new ResponseDTO("cart data successfully updated", cartService.updateCartByToken(cartDto, token, cartId));
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-    }
 
 
 }

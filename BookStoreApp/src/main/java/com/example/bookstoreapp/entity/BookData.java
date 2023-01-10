@@ -20,7 +20,7 @@ public class BookData {
     private String bookName;
     private String author;
     private float price;
-    private LocalDate arrivalDate;
+    private LocalDate arrivalDate=LocalDate.now();
 
     private String coverImage;
     @JsonDeserialize

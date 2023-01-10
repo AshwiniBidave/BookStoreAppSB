@@ -3,18 +3,17 @@ package com.example.bookstoreapp.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-
+import java.time.LocalDate;
+import java.util.*;
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Component
-public class CartDTO {
+@AllArgsConstructor
+public class OrderDTO {
+    public String address;
+
     public int userId;
     public List<Integer> bookId;
     public List<Integer> quantity;
-
+    public LocalDate orderDate = LocalDate.now();
 }

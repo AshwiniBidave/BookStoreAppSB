@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 public class Cart {
     @Id
@@ -22,24 +21,31 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private UserData userData;
 
-    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private BookData bookData;
+    @ElementCollection
+    @CollectionTable(name = "cart_books",joinColumns = @JoinColumn(name = "cart_id"))
+    public List<Integer> bookData;
 
+    @ElementCollection
+    @CollectionTable(name = "cart_book_quantities",joinColumns = @JoinColumn(name = "cart_id"))
+    public List<Integer> quantity;
 
-    public int quantity;
-
-    private double bookPrice;
-
-
-    public Cart(UserData userData, BookData bookData, int quantity,double bookPrice) {
+    public Cart(UserData userData, List<Integer> bookData, List<Integer> quantity) {
         this.userData = userData;
         this.bookData = bookData;
         this.quantity = quantity;
-        this.bookPrice = bookPrice;
 
     }
+    public Cart(int cartId, UserData userData, List<Integer> bookData, List<Integer> quantity) {
+        this.cartId = cartId;
+        this.userData = userData;
+        this.bookData = bookData;
+        this.quantity = quantity;
+    }
 
+    public Cart() {
 
+    }
 }
+
+
+

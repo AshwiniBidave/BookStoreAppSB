@@ -101,16 +101,13 @@ public class BookService implements BookServiceImp {
     }
 
     @Override
-    public BookData updateQuantityById(int id, int quantity) {
-        if (bookDataRepository.findById(id).isPresent()) {
-            BookData book = bookDataRepository.updateQuantityByID(id, quantity);
-            System.out.println(bookDataRepository.findAll());
-            return bookDataRepository.save(book);
-        } else {
-            throw (new CustomException("This id is not present"));
-        }
-
+    public BookData updateQuantityById(int id, int quantity, String token) throws CustomException {
+        UserData userData = userDataService.getUserDataById((token));
+        if (bookDataRepository.findById(id).isPresent() && userData.isAdmin()) {
+            BookData bookData = this.getById(id);
+            bookData.setQuantity(quantity);
+            return bookDataRepository.save(bookData);
+        } else throw new CustomException("No book found with the given id or you are not an admin user.");
     }
-
 
 }

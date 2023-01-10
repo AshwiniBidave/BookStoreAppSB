@@ -96,8 +96,8 @@ public class BookDataController {
     }
 
     @PutMapping("/updateQuantity/{id}/{quantity}")
-    public ResponseEntity<ResponseDTO> updateQuantityById(@PathVariable int id, @PathVariable int quantity) {
-        ResponseDTO responseDTO = new ResponseDTO("Book Quantity Updated Successfully", bookService.updateQuantityById(id, quantity));
+    public ResponseEntity<ResponseDTO> updateQuantityById(@PathVariable int id, @PathVariable int quantity,@RequestParam String token) {
+        ResponseDTO responseDTO = new ResponseDTO("Book Quantity Updated Successfully", bookService.updateQuantityById(id,quantity,token));
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

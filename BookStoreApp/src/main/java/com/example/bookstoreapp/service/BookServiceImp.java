@@ -22,9 +22,6 @@ public interface BookServiceImp  {
     List<BookData> sortByName();
 
     List<BookData> sortByPrice();
-
-    BookData updateQuantityById(int id, int quantity);
-
-
+    BookData updateQuantityById(int id, int quantity, String token);
 
 }
