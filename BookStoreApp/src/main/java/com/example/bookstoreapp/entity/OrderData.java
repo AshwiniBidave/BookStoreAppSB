@@ -3,6 +3,7 @@ package com.example.bookstoreapp.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.LazyToOne;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,14 +13,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
+
 public class OrderData {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public int orderId;
 
-    @ElementCollection
-    @CollectionTable(name = "books", joinColumns = @JoinColumn(name = "order_id"))
-    public List<Integer> bookData;
+   @ElementCollection
+   @CollectionTable(name = "books", joinColumns = @JoinColumn(name = "order_id"))
+   public List<Integer> bookData;
+
+
 
     @ElementCollection
     @CollectionTable(name = "book_quantities", joinColumns = @JoinColumn(name = "order_id"))

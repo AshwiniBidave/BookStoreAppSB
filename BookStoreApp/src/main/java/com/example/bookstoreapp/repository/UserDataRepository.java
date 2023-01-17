@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
+@Repository
 public interface UserDataRepository extends JpaRepository<UserData,Integer> {
     @Query(value = "select * from user_data where login_Id= :loginID", nativeQuery = true)
 

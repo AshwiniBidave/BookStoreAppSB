@@ -17,6 +17,11 @@ public class OrderController{
     ResponseDTO response = new ResponseDTO("Product Added To Cart ", orderService.addOrderDetails(orderDTO,token));
     return new ResponseEntity<>(response, HttpStatus.CREATED);
 }
+    @PostMapping("/placeOrder")
+    ResponseEntity<ResponseDTO> addPlaceOrder(@RequestParam String token) {
+        ResponseDTO response = new ResponseDTO("Product Added To Cart ", orderService.placeorder(token));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
         @PutMapping("/cancel/{id}")
         ResponseEntity<ResponseDTO> cancelOrder(@PathVariable int id) {
@@ -35,4 +40,9 @@ public class OrderController{
             ResponseDTO response = new ResponseDTO("Product Added To Cart ", orderService.getAllDetails());
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<ResponseDTO> removeItemById(@PathVariable int orderId) {
+        ResponseDTO responseDto = new ResponseDTO("Data removed from cart", orderService.deleteOrder(orderId));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 }

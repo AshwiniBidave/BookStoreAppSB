@@ -4,14 +4,18 @@ import com.example.bookstoreapp.dto.BookDataDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@Getter
+@Setter
 @RequiredArgsConstructor
-
+@Embeddable
 public class BookData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

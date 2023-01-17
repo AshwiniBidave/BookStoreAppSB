@@ -2,22 +2,22 @@ package com.example.bookstoreapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-
+@Setter
+@Getter
 @Data
+
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int cartId;
 
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserData userData;
 
